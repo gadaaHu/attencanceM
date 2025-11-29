@@ -1,23 +1,34 @@
 import os
-from dotenv import load_dotenv
-
-load_dotenv()
 
 class Config:
-    SECRET_KEY = os.environ.get('SECRET_KEY') or 'membership-system-secret-key-2024'
+    # Database Configuration
+    DB_HOST = os.getenv('DB_HOST', 'localhost')
+    DB_USER = os.getenv('DB_USER', 'root')
+    DB_PASSWORD = os.getenv('DB_PASSWORD', '')
+    DB_NAME = os.getenv('DB_NAME', 'membership_system')
     
-    # MySQL configuration (XAMPP)
-    DB_HOST = os.environ.get('DB_HOST', 'localhost')
-    DB_NAME = os.environ.get('DB_NAME', 'membership_system')
-    DB_USER = os.environ.get('DB_USER', 'root')
-    DB_PASSWORD = os.environ.get('DB_PASSWORD', '')
-    DB_PORT = os.environ.get('DB_PORT', '3306')
+    # Application Settings
+    SECRET_KEY = os.getenv('SECRET_KEY', 'your-secret-key-here')
+    UPLOAD_FOLDER = 'uploads'
+    ALLOWED_EXTENSIONS = {'pdf', 'docx', 'xlsx', 'jpg', 'jpeg', 'png'}
+    MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16MB max file size
     
-    # File upload settings
-    MAX_FILE_SIZE = 16 * 1024 * 1024
-    ALLOWED_IMAGE_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
-    ALLOWED_DOCUMENT_EXTENSIONS = {'pdf', 'doc', 'docx', 'xlsx', 'xls'}
+    # Face Recognition Settings
+    FACE_ENCODINGS_PATH = 'uploads/face_encodings'
+    PROFILES_PATH = 'uploads/profiles'
+    PLANS_PATH = 'uploads/plans'
+    CONFIDENCE_THRESHOLD = 0.6
     
-    # Face recognition
-    FACE_RECOGNITION_TOLERANCE = 0.6
-    FACE_DETECTION_MODEL = 'hog'
+class DevelopmentConfig(Config):
+    DEBUG = True
+    TESTING = False
+
+class ProductionConfig(Config):
+    DEBUG = False
+    TESTING = False
+
+config = {
+    'development': DevelopmentConfig,
+    'production': ProductionConfig,
+    'default': DevelopmentConfig
+}
