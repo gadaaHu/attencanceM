@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}Member Management - Membership System{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">
+        <i class="fas fa-user-friends"></i> Member Management
+    </h1>
+    <div class="btn-toolbar">
+        <a href="{{ url_for('register_member') }}" class="btn btn-primary me-2">
+            <i class="fas fa-user-plus"></i> Register New Member
+        </a>
+        <div class="btn-group">
+            <a href="{{ url_for('manage_members', status='all') }}" class="btn btn-outline-secondary {% if status_filter == 'all' %}active{% endif %}">All</a>
+            <a href="{{ url_for('manage_members', status='active') }}" class="btn btn-outline-success {% if status_filter == 'active' %}active{% endif %}">Active</a>
+            <a href="{{ url_for('manage_members', status='pending') }}" class="btn btn-outline-warning {% if status_filter == 'pending' %}active{% endif %}">Pending</a>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        {% if members %}
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Membership Number</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Type</th>
+                            <th>Status</th>
+                            <th>Join Date</th>
+                            <th>Face Registered</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for member in members %}
+                            <tr>
+                                <td>{{ member.fullname }}</td>
+                                <td>{{ member.membership_number }}</td>
+                                <td>{{ member.email }}</td>
+                                <td>{{ member.phone }}</td>
+                                <td><span class="badge bg-info">{{ member.membership_type }}</span></td>
+                                <td>
+                                    {% if member.status == 'active' %}
+                                        <span class="badge bg-success">Active</span>
+                                    {% else %}
+                                        <span class="badge bg-warning">Pending</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ member.join_date.strftime('%Y-%m-%d') }}</td>
+                                <td>
+                                    {% if member.face_encoding_path %}
+                                        <span class="badge bg-success"><i class="fas fa-check"></i></span>
+                                    {% else %}
+                                        <span class="badge bg-danger"><i class="fas fa-times"></i></span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <a href="{{ url_for('member_profile', member_id=member.id) }}" class="btn btn-info" title="View Profile">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        {% if not member.face_encoding_path %}
+                                        <a href="{{ url_for('register_face', member_id=member.id) }}" class="btn btn-warning" title="Register Face">
+                                            <i class="fas fa-camera"></i>
+                                        </a>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="text-center py-4">
+                <i class="fas fa-users fa-3x text-muted mb-3"></i>
+                <p class="text-muted">No members found.</p>
+                <a href="{{ url_for('register_member') }}" class="btn btn-primary">Register First Member</a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

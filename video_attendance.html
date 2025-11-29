@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block title %}Video Attendance - {{ event.title }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">
+        <i class="fas fa-video"></i> Video Attendance - {{ event.title }}
+    </h1>
+    <div class="btn-toolbar">
+        <span class="badge bg-info fs-6 me-2">{{ event.event_date.strftime('%b %d, %Y') }}</span>
+        <a href="{{ url_for('manage_events') }}" class="btn btn-secondary">Back to Events</a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title">Live Camera Feed</h5>
+            </div>
+            <div class="card-body text-center">
+                <div id="video-container">
+                    <video id="video" width="640" height="480" autoplay muted></video>
+                </div>
+                <div class="mt-3">
+                    <button id="startCamera" class="btn btn-success">
+                        <i class="fas fa-camera"></i> Start Camera
+                    </button>
+                    <button id="capture" class="btn btn-primary" disabled>
+                        <i class="fas fa-user-check"></i> Capture & Recognize
+                    </button>
+                    <button id="stopCamera" class="btn btn-danger" disabled>
+                        <i class="fas fa-stop"></i> Stop Camera
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title">Recognition Results</h5>
+            </div>
+            <div class="card-body">
+                <div id="results">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i> 
+                        Start camera and capture to recognize faces
+                    </div>
+                </div>
+                <div id="attendanceLog" class="mt-3">
+                    <h6>Recent Recognitions:</h6>
+                    <div id="logEntries" style="max-height: 200px; overflow-y: auto;"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="card-title">Statistics</h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-6">
+                        <div class="border rounded p-2">
+                            <h4 id="totalRecognized">0</h4>
+                            <small>Total Recognized</small>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="border rounded p-2">
+                            <h4 id="sessionCount">0</h4>
+                            <small>This Session</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/video_capture.js') }}"></script>
+<script>
+    const eventId = {{ event.id }};
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        initVideoAttendance(eventId);
+    });
+</script>
+{% endblock %}

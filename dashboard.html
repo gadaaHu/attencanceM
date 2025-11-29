@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Membership System{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Dashboard</h1>
+</div>
+
+<div class="row">
+    <div class="col-md-3 mb-4">
+        <div class="card text-white bg-primary">
+            <div class="card-body">
+                <div class="d-flex">
+                    <div>
+                        <h4>{{ active_members }}</h4>
+                        <p>Active Members</p>
+                    </div>
+                    <div class="ms-auto">
+                        <i class="fas fa-users fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-4">
+        <div class="card text-white bg-warning">
+            <div class="card-body">
+                <div class="d-flex">
+                    <div>
+                        <h4>{{ pending_members }}</h4>
+                        <p>Pending Approval</p>
+                    </div>
+                    <div class="ms-auto">
+                        <i class="fas fa-user-clock fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-4">
+        <div class="card text-white bg-success">
+            <div class="card-body">
+                <div class="d-flex">
+                    <div>
+                        <h4>{{ upcoming_events }}</h4>
+                        <p>Upcoming Events</p>
+                    </div>
+                    <div class="ms-auto">
+                        <i class="fas fa-calendar fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-4">
+        <div class="card text-white bg-info">
+            <div class="card-body">
+                <div class="d-flex">
+                    <div>
+                        <h4>{{ today_attendance }}</h4>
+                        <p>Today's Attendance</p>
+                    </div>
+                    <div class="ms-auto">
+                        <i class="fas fa-clipboard-check fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5>Recent Activities</h5>
+            </div>
+            <div class="card-body">
+                {% if recent_activities %}
+                <div class="list-group">
+                    {% for activity in recent_activities %}
+                    <div class="list-group-item">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">{{ activity.fullname }}</h6>
+                            <small>{{ activity.recognized_at.strftime('%H:%M') }}</small>
+                        </div>
+                        <p class="mb-1">Attended: {{ activity.title }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-muted">No recent activities</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5>Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('register_member') }}" class="btn btn-primary">
+                        <i class="fas fa-user-plus"></i> Register Member
+                    </a>
+                    <a href="{{ url_for('create_event') }}" class="btn btn-success">
+                        <i class="fas fa-calendar-plus"></i> Create Event
+                    </a>
+                    <a href="{{ url_for('upload_plan') }}" class="btn btn-info">
+                        <i class="fas fa-upload"></i> Upload Plan
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

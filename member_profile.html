@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block title %}{{ member.fullname }} - Profile{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">
+        <i class="fas fa-user"></i> {{ member.fullname }}
+    </h1>
+    <div class="btn-toolbar">
+        <a href="{{ url_for('manage_members') }}" class="btn btn-secondary">Back to Members</a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title">Member Information</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <strong>Membership Number:</strong><br>
+                    {{ member.membership_number }}
+                </div>
+                <div class="mb-3">
+                    <strong>Email:</strong><br>
+                    {{ member.email }}
+                </div>
+                <div class="mb-3">
+                    <strong>Phone:</strong><br>
+                    {{ member.phone }}
+                </div>
+                <div class="mb-3">
+                    <strong>Address:</strong><br>
+                    {{ member.address or 'Not provided' }}
+                </div>
+                <div class="mb-3">
+                    <strong>Date of Birth:</strong><br>
+                    {{ member.date_of_birth or 'Not provided' }}
+                </div>
+                <div class="mb-3">
+                    <strong>Emergency Contact:</strong><br>
+                    {{ member.emergency_contact or 'Not provided' }}
+                </div>
+                <div class="mb-3">
+                    <strong>Membership Type:</strong><br>
+                    <span class="badge bg-info">{{ member.membership_type }}</span>
+                </div>
+                <div class="mb-3">
+                    <strong>Status:</strong><br>
+                    {% if member.status == 'active' %}
+                        <span class="badge bg-success">Active</span>
+                    {% else %}
+                        <span class="badge bg-warning">Pending Approval</span>
+                    {% endif %}
+                </div>
+                <div class="mb-3">
+                    <strong>Join Date:</strong><br>
+                    {{ member.join_date }}
+                </div>
+                <div class="mb-3">
+                    <strong>Face Recognition:</strong><br>
+                    {% if member.face_encoding_path %}
+                        <span class="badge bg-success">Registered</span>
+                    {% else %}
+                        <span class="badge bg-danger">Not Registered</span>
+                        <a href="{{ url_for('register_face', member_id=member.id) }}" class="btn btn-sm btn-warning mt-1">
+                            <i class="fas fa-camera"></i> Register Face
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title">Attendance History</h5>
+            </div>
+            <div class="card-body">
+                {% if attendance_history %}
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Event</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for attendance in attendance_history %}
+                            <tr>
+                                <td>{{ attendance.title }}</td>
+                                <td>{{ attendance.event_date.strftime('%Y-%m-%d') }}</td>
+                                <td>
+                                    {% if attendance.status == 'present' %}
+                                        <span class="badge bg-success">Present</span>
+                                    {% else %}
+                                        <span class="badge bg-danger">Absent</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ attendance.recognized_at.strftime('%H:%M') }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-muted">No attendance records found.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

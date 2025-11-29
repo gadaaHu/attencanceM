@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block title %}Reports - Membership System{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">
+        <i class="fas fa-chart-bar"></i> System Reports
+    </h1>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title">Membership Growth (Last 12 Months)</h5>
+            </div>
+            <div class="card-body">
+                {% if membership_growth %}
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Month</th>
+                                <th>New Members</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for growth in membership_growth %}
+                            <tr>
+                                <td>{{ growth.month }}</td>
+                                <td>{{ growth.new_members }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-muted">No membership data available.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title">Recent Event Attendance</h5>
+            </div>
+            <div class="card-body">
+                {% if attendance_stats %}
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Event</th>
+                                <th>Date</th>
+                                <th>Attendance</th>
+                                <th>Unique Members</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for stat in attendance_stats %}
+                            <tr>
+                                <td>{{ stat.title }}</td>
+                                <td>{{ stat.event_date.strftime('%Y-%m-%d') }}</td>
+                                <td>{{ stat.attendance_count }}</td>
+                                <td>{{ stat.unique_members }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-muted">No attendance data available.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title">Quick Statistics</h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-md-3 mb-3">
+                        <div class="border rounded p-3">
+                            <h3>{{ membership_growth|sum(attribute='new_members') if membership_growth else 0 }}</h3>
+                            <small class="text-muted">New Members (12M)</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="border rounded p-3">
+                            <h3>{{ attendance_stats|length if attendance_stats else 0 }}</h3>
+                            <small class="text-muted">Events (90D)</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="border rounded p-3">
+                            <h3>{{ attendance_stats|sum(attribute='attendance_count') if attendance_stats else 0 }}</h3>
+                            <small class="text-muted">Total Attendance</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="border rounded p-3">
+                            <h3>{{ attendance_stats|sum(attribute='unique_members') if attendance_stats else 0 }}</h3>
+                            <small class="text-muted">Unique Attendees</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

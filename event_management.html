@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}Event Management - Membership System{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">
+        <i class="fas fa-calendar-alt"></i> Event Management
+    </h1>
+    <a href="{{ url_for('create_event') }}" class="btn btn-primary">
+        <i class="fas fa-calendar-plus"></i> Create New Event
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        {% if events %}
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Event Title</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Location</th>
+                            <th>Status</th>
+                            <th>Created</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for event in events %}
+                            <tr>
+                                <td>{{ event.title }}</td>
+                                <td>{{ event.event_date.strftime('%Y-%m-%d') }}</td>
+                                <td>
+                                    {% if event.start_time and event.end_time %}
+                                        {{ event.start_time.strftime('%H:%M') }} - {{ event.end_time.strftime('%H:%M') }}
+                                    {% else %}
+                                        All day
+                                    {% endif %}
+                                </td>
+                                <td>{{ event.location or 'Not specified' }}</td>
+                                <td>
+                                    {% if event.status == 'scheduled' %}
+                                        <span class="badge bg-success">Scheduled</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">{{ event.status }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ event.created_at.strftime('%Y-%m-%d') }}</td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <a href="{{ url_for('video_attendance', event_id=event.id) }}" class="btn btn-success" title="Take Attendance">
+                                            <i class="fas fa-clipboard-check"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="text-center py-4">
+                <i class="fas fa-calendar-times fa-3x text-muted mb-3"></i>
+                <p class="text-muted">No events found.</p>
+                <a href="{{ url_for('create_event') }}" class="btn btn-primary">Create Your First Event</a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

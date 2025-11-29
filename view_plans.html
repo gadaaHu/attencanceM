@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}Annual Plans - Membership System{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">
+        <i class="fas fa-chart-line"></i> Annual Plans
+    </h1>
+    <a href="{{ url_for('upload_plan') }}" class="btn btn-primary">
+        <i class="fas fa-upload"></i> Upload New Plan
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        {% if plans %}
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Type</th>
+                            <th>Year</th>
+                            <th>Description</th>
+                            <th>Uploaded By</th>
+                            <th>Upload Date</th>
+                            <th>Analysis</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for plan in plans %}
+                            <tr>
+                                <td>{{ plan.title }}</td>
+                                <td><span class="badge bg-info">{{ plan.plan_type }}</span></td>
+                                <td>{{ plan.year }}</td>
+                                <td>{{ plan.description or 'No description' }}</td>
+                                <td>{{ plan.uploaded_by }}</td>
+                                <td>{{ plan.uploaded_at.strftime('%Y-%m-%d') }}</td>
+                                <td>
+                                    {% if plan.analysis_data %}
+                                        <span class="badge bg-success">Analyzed</span>
+                                    {% else %}
+                                        <span class="badge bg-warning">Pending</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <a href="{{ url_for('analyze_plan', plan_id=plan.id) }}" class="btn btn-info" title="Analyze Plan">
+                                            <i class="fas fa-chart-bar"></i>
+                                        </a>
+                                        <a href="{{ url_for('static', filename='uploads/plans/' + plan.file_path.split('/')[-1]) }}" class="btn btn-primary" title="Download" target="_blank">
+                                            <i class="fas fa-download"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="text-center py-4">
+                <i class="fas fa-file-alt fa-3x text-muted mb-3"></i>
+                <p class="text-muted">No annual plans found.</p>
+                <a href="{{ url_for('upload_plan') }}" class="btn btn-primary">Upload First Plan</a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
